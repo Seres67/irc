@@ -250,28 +250,28 @@ func (ic *IRCClient) HandleMatrixRoomTopic(ctx context.Context, msg *bridgev2.Ma
 	return true, nil
 }
 
-func (ic *IRCClient) HandleMatrixMembership(ctx context.Context, msg *bridgev2.MatrixMembershipChange) (bool, error) {
+func (ic *IRCClient) HandleMatrixMembership(ctx context.Context, msg *bridgev2.MatrixMembershipChange) (*bridgev2.MatrixMembershipResult, error) {
 	switch msg.Type {
 	case bridgev2.Leave:
 		channel, err := ic.parsePortalID(msg.Portal.ID)
 		if err != nil {
-			return false, err
+			return nil, err
 		} else if ic.isDM(channel) {
 			// Leaving DMs is a no-op
-			return true, nil
+			return nil, nil
 		}
 		meta := ic.UserLogin.Metadata.(*UserLoginMetadata)
 		meta.Channels = exslices.FastDeleteItem(meta.Channels, channel)
 		err = ic.UserLogin.Save(ctx)
 		if err != nil {
-			return false, fmt.Errorf("failed to update autojoin channels: %w", err)
+			return nil, fmt.Errorf("failed to update autojoin channels: %w", err)
 		}
 		_, err = ic.SendRequest(ctx, nil, "", "PART", channel)
 		if err != nil {
-			return false, fmt.Errorf("failed to part channel: %w", err)
+			return nil, fmt.Errorf("failed to part channel: %w", err)
 		}
-		return true, nil
+		return nil, nil
 	default:
-		return false, fmt.Errorf("unsupported membership change")
+		return nil, fmt.Errorf("unsupported membership change")
 	}
 }
