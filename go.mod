@@ -4,6 +4,8 @@ go 1.25.0
 
 toolchain go1.25.4
 
+tool go.mau.fi/util/cmd/maubuild
+
 require (
 	github.com/ergochat/irc-go v0.5.0-rc2
 	github.com/pkg/errors v0.9.1
@@ -13,8 +15,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.1
 	maunium.net/go/mautrix v0.26.1-0.20251202132204-2eeece694254
 )
-
-tool go.mau.fi/util/cmd/maubuild
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
