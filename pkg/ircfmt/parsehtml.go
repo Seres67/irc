@@ -18,10 +18,12 @@ package ircfmt
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"maunium.net/go/mautrix/event"
 	"maunium.net/go/mautrix/format"
+	"maunium.net/go/mautrix/id"
 )
 
 var htmlParser = format.HTMLParser{
@@ -59,6 +61,45 @@ var htmlParser = format.HTMLParser{
 	MonospaceConverter: formattingAdder(monospace),
 	TextConverter: func(s string, context format.Context) string {
 		return StripASCII(s)
+	},
+	PillConverter: func(displayname, mxid, eventID string, ctx format.Context) string {
+		// const ContextKeyMentions = "_mentions"
+		// switch {
+		// //NOTE: im guessing that len(mxid) == 0 means that it comes from the non-matrix side
+		// case len(mxid) == 0:
+		// 	//TODO: could contain a user mention, convert to matrix?
+		// 	//NOTE: how the fuck? search for colon? what
+		// 	if false {
+		// 		//TODO: change this condition to be when a mention has been found
+		// 		existingMentions, _ := ctx.ReturnData[ContextKeyMentions].([]id.UserID)
+		// 		ctx.ReturnData[ContextKeyMentions] = append(existingMentions, id.UserID(mxid))
+		// 	}
+		// 	return displayname
+		// case len(eventID) > 0:
+		// 	// Event ID link, always just show the link
+		//
+		// 	//NOTE: no clue what this is supposed to be
+		// 	return fmt.Sprintf("https://matrix.to/#/%s/%s", mxid, eventID)
+		// case mxid[0] == '#':
+		// 	//NOTE: matrix -> irc
+		// 	//TODO: what do you convert that to? can you even link to other channels in irc?
+		// 	return mxid
+		// case mxid[0] == '!':
+		// 	//TODO: actual matrix room ID to convert to irc, send link?
+		// 	return fmt.Sprintf("https://matrix.to/#/%s", mxid)
+		// case mxid[0] == '@':
+		// 	//TODO: user mentioned from matrix, convert to irc
+		// 	return displayname
+		// default:
+		// 	// Other link (e.g. room ID link with display text), show text and link
+		// 	return fmt.Sprintf("%s (https://matrix.to/#/%s)", displayname, mxid)
+		// }
+
+		if mxid[0] == '@' {
+			return displayname
+		}
+		return format.DefaultPillConverter(displayname, mxid, eventID, ctx)
+
 	},
 }
 
