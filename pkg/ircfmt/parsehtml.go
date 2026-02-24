@@ -18,12 +18,12 @@ package ircfmt
 
 import (
 	"context"
-	"fmt"
+	// "fmt"
 	"strings"
 
 	"maunium.net/go/mautrix/event"
 	"maunium.net/go/mautrix/format"
-	"maunium.net/go/mautrix/id"
+	// "maunium.net/go/mautrix/id"
 )
 
 var htmlParser = format.HTMLParser{
